@@ -1,10 +1,12 @@
 local SUN_TEXTURE = "sun.png"
 local SUN_SCALE = 3.75
+local TOTAL_FRAMES = 30  -- Total number of frames in the texture
+local ANIMATION_LENGTH = 24  -- Total length of a full day-night cycle in seconds
 
 -- Define the colors for sunrise, noon, and sunset
 local SUNRISE_COLOR = {r = 255, g = 223, b = 0}  -- Yellow
-local NOON_COLOR = {r = 255, g = 255, b = 255}    -- White
-local SUNSET_COLOR = {r = 255, g = 223, b = 0}    -- Yellow
+local NOON_COLOR = {r = 255, g = 255, b = 255}   -- White
+local SUNSET_COLOR = {r = 255, g = 223, b = 0}   -- Yellow
 
 -- Function to linearly interpolate between two colors
 local function lerp_color(color1, color2, t)
@@ -31,13 +33,19 @@ local function get_sun_color(time_of_day)
     end
 end
 
+-- Calculate the current frame based on time of day
+local function get_frame_index(time_of_day)
+    return math.floor(time_of_day * TOTAL_FRAMES) % TOTAL_FRAMES
+end
+
 -- Function to update sun parameters
 local function update_sun(player)
     local time_of_day = minetest.get_timeofday()
     local sun_color = get_sun_color(time_of_day)
     local sun_tonemap = color_to_hex(sun_color)
+    local frame_index = get_frame_index(time_of_day)
     local sun_arg = {
-        texture = SUN_TEXTURE,
+        texture = SUN_TEXTURE .. "^[verticalframe:" .. TOTAL_FRAMES .. ":" .. frame_index,
         tonemap = sun_tonemap,
         scale = SUN_SCALE
     }
