@@ -24,21 +24,24 @@ end
 
 -- Calculate the sun color based on time of day
 local function get_sun_color(time_of_day)
-    if time_of_day < 0.125 or time_of_day >= 0.875 then
+    if time_of_day < 0.04 or time_of_day >= 0.95 then
         -- Night
         return NIGHT_COLOR
-    elseif time_of_day < 0.25 then
-        -- Late night to early morning
-        return lerp_color(NIGHT_COLOR, SUNRISE_COLOR, (time_of_day - 0.125) * 8)
-    elseif time_of_day < 0.5 then
-        -- Morning to noon
-        return lerp_color(SUNRISE_COLOR, NOON_COLOR, (time_of_day - 0.25) * 2)
-    elseif time_of_day < 0.75 then
-        -- Noon to evening
-        return lerp_color(NOON_COLOR, SUNSET_COLOR, (time_of_day - 0.5) * 2)
+    elseif time_of_day < 0.14 then
+        -- Late night to early morning (faster sunrise transition)
+        return lerp_color(NIGHT_COLOR, SUNRISE_COLOR, (time_of_day - 0.04) * 20)
+    elseif time_of_day < 0.28 then
+        -- Morning to mid morning (white sun)
+        return lerp_color(SUNRISE_COLOR, NOON_COLOR, (time_of_day - 0.14) * (5/3))
+    elseif time_of_day < 0.8 then
+        -- Mid morning to late evening (white sun)
+        return NOON_COLOR
+    elseif time_of_day < 0.85 then
+        -- Late evening to early night (faster sunset transition)
+        return lerp_color(NOON_COLOR, NIGHT_COLOR, (time_of_day - 0.8) * 10)
     else
-        -- Evening to late night
-        return lerp_color(SUNSET_COLOR, NIGHT_COLOR, (time_of_day - 0.75) * 8)
+        -- Early night to late night (faster sunset transition)
+        return NIGHT_COLOR
     end
 end
 
