@@ -1,6 +1,6 @@
 local SUN_TEXTURE = "sun.png"
 local SUN_SCALE = 3.25
-local TOTAL_FRAMES = 36  -- Total number of frames in the texture
+local TOTAL_FRAMES = 32  -- Total number of frames in the texture
 
 -- Define the colors for sunrise, noon, sunset, and night
 local SUNRISE_COLOR = {r = 255, g = 223, b = 0}  -- Yellow
