@@ -1,11 +1,12 @@
 local SUN_TEXTURE = "sun.png"
-local SUN_SCALE = 3.75
-local TOTAL_FRAMES = 32  -- Total number of frames in the texture
+local SUN_SCALE = 3.25
+local TOTAL_FRAMES = 36  -- Total number of frames in the texture
 
--- Define the colors for sunrise, noon, and sunset
+-- Define the colors for sunrise, noon, sunset, and night
 local SUNRISE_COLOR = {r = 255, g = 223, b = 0}  -- Yellow
 local NOON_COLOR = {r = 255, g = 255, b = 255}   -- White
 local SUNSET_COLOR = {r = 255, g = 223, b = 0}   -- Yellow
+local NIGHT_COLOR = {r = 0, g = 0, b = 0}        -- Black
 
 -- Function to linearly interpolate between two colors
 local function lerp_color(color1, color2, t)
@@ -23,16 +24,25 @@ end
 
 -- Calculate the sun color based on time of day
 local function get_sun_color(time_of_day)
-    if time_of_day < 0.5 then
-        -- Sunrise to noon
-        return lerp_color(SUNRISE_COLOR, NOON_COLOR, time_of_day * 2)
-    else
-        -- Noon to sunset
+    if time_of_day < 0.125 or time_of_day >= 0.875 then
+        -- Night
+        return NIGHT_COLOR
+    elseif time_of_day < 0.25 then
+        -- Late night to early morning
+        return lerp_color(NIGHT_COLOR, SUNRISE_COLOR, (time_of_day - 0.125) * 8)
+    elseif time_of_day < 0.5 then
+        -- Morning to noon
+        return lerp_color(SUNRISE_COLOR, NOON_COLOR, (time_of_day - 0.25) * 2)
+    elseif time_of_day < 0.75 then
+        -- Noon to evening
         return lerp_color(NOON_COLOR, SUNSET_COLOR, (time_of_day - 0.5) * 2)
+    else
+        -- Evening to late night
+        return lerp_color(SUNSET_COLOR, NIGHT_COLOR, (time_of_day - 0.75) * 8)
     end
 end
 
--- Calculate the current frame based on time of day
+-- Function to calculate the frame index based on time of day
 local function get_frame_index(time_of_day)
     return math.floor(time_of_day * TOTAL_FRAMES) % TOTAL_FRAMES
 end
